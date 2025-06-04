@@ -396,18 +396,20 @@
             const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyj9hyVGtlrB_Lb_EyIkzdIQUs8AdLhZhP3vsVK8JUKQWCLYzJ0CirtVRJgYRnlG2A_/exec';
 
             // Definición de los criterios de evaluación con sus puntajes máximos
+            // Importante: Asegúrate de que esta definición coincida con la que deseas.
+            // Para tu caso, si "Uso de datos" y "Manejo post paro" son de 15 puntos:
             const criteria = [
                 { id: 'rcpTechnique', name: 'Técnica de RCP y manejo de vía aérea', maxScore: 15 },
                 { id: 'clinicalEvaluation', name: 'Evaluación clínica inicial y diagnóstico', maxScore: 20 },
-                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 20 },
+                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 15 }, // Vuelve a 15, según tu último ajuste
                 { id: 'communicationLeadership', name: 'Comunicación y liderazgo en el equipo', maxScore: 20 },
                 { id: 'ethicalAttitude', name: 'Actitud ética, reflexiva y profesional', maxScore: 15 },
-                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 20 }
+                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 15 } // Vuelve a 15, según tu último ajuste
             ];
 
             // Calculamos el puntaje máximo posible de forma dinámica.
-            // Esto sumará (15 + 20 + 20 + 20 + 15 + 20) = 110 puntos.
-            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0);
+            // Esto sumará (15 + 20 + 15 + 20 + 15 + 15) = 100 puntos.
+            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0); // Esto dará 100
 
             // Escala de calificación para el tooltip (se refiere a la interpretación de un score individual de 0-20)
             const scoreScaleTooltip = `
@@ -448,9 +450,8 @@ Excelente (15–20)
                     rawTotalScore += parseInt(selector.value, 10);
                 });
 
-                // Escalamos el puntaje a un total sobre 100
-                const scaledTotalScore = (rawTotalScore / ACTUAL_MAXIMUM_POSSIBLE_SCORE) * 100;
-                const displayedScore = Math.round(scaledTotalScore);
+                // Como ACTUAL_MAXIMUM_POSSIBLE_SCORE ahora es 100, no hay necesidad de escalar.
+                const displayedScore = rawTotalScore; // Directamente el total sumado
                 
                 totalScoreSpan.textContent = displayedScore;
                 finalGradeSpan.textContent = getFinalGrade(displayedScore);
