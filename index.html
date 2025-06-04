@@ -393,7 +393,7 @@
             const saveGoogleSheetsBtn = document.getElementById('saveGoogleSheetsBtn');
 
             // ** TU URL DE GOOGLE APPS SCRIPT - ¡ACTUALIZADA A LA ÚLTIMA VERSIÓN QUE ME DISTE! **
-            const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzRHHB8bOxyCHwm7HQiukld-lb_Fs0WlmyTPqwPiYzUV8X55QX-RBueLCmDbDVT3TJu/exec';
+            const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwW4ldHr1TKBBKSz0kgVwYmFyzON3HajicOjHtI3PmAYfyeeBnoxAr9lME1rPY-epGn/exec';
 
             // Definición de los criterios de evaluación con sus puntajes máximos
             // Importante: Asegúrate de que esta definición coincida con la que deseas.
@@ -401,15 +401,15 @@
             const criteria = [
                 { id: 'rcpTechnique', name: 'Técnica de RCP y manejo de vía aérea', maxScore: 15 },
                 { id: 'clinicalEvaluation', name: 'Evaluación clínica inicial y diagnóstico', maxScore: 20 },
-                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 15 }, // Cambiado a 15
+                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 20 }, // Vuelve a 20 según el problema inicial
                 { id: 'communicationLeadership', name: 'Comunicación y liderazgo en el equipo', maxScore: 20 },
                 { id: 'ethicalAttitude', name: 'Actitud ética, reflexiva y profesional', maxScore: 15 },
-                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 15 } // Cambiado a 15
+                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 20 } // Vuelve a 20 según el problema inicial
             ];
 
             // Calculamos el puntaje máximo posible de forma dinámica.
-            // Esto sumará (15 + 20 + 15 + 20 + 15 + 15) = 100 puntos exactos.
-            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0);
+            // Esto sumará (15 + 20 + 20 + 20 + 15 + 20) = 110 puntos.
+            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0); // Esto dará 110
 
             // Escala de calificación para el tooltip (se refiere a la interpretación de un score individual de 0-20)
             const scoreScaleTooltip = `
@@ -450,9 +450,11 @@ Excelente (15–20)
                     rawTotalScore += parseInt(selector.value, 10);
                 });
 
-                // Si el puntaje máximo posible es 100, no hay necesidad de escalar.
-                const displayedScore = rawTotalScore; // Directamente el total sumado
-
+                // Escalamos el puntaje a un total sobre 100
+                // (puntaje_obtenido / puntaje_maximo_real) * 100
+                const scaledTotalScore = (rawTotalScore / ACTUAL_MAXIMUM_POSSIBLE_SCORE) * 100;
+                const displayedScore = Math.round(scaledTotalScore); // Redondeamos para un número entero legible
+                
                 totalScoreSpan.textContent = displayedScore;
                 finalGradeSpan.textContent = getFinalGrade(displayedScore);
             }
@@ -592,8 +594,9 @@ Excelente (15–20)
                 const finalGrade = finalGradeSpan.textContent;
 
                 const scores = {};
-                scoreSelectors.forEach(selector => {
-                    scores[selector.id] = parseInt(selector.value, 10);
+                criteria.forEach(criterion => { // Iterar sobre 'criteria' para obtener los IDs y valores
+                    const selector = document.getElementById(criterion.id);
+                    scores[criterion.id] = parseInt(selector.value, 10);
                 });
 
                 // Generar el PDF en memoria (Base64)
@@ -630,7 +633,7 @@ Excelente (15–20)
                 doc.setTextColor(0, 0, 0);
 
                 criteria.forEach(criterion => {
-                    const score = scores[criterion.id];
+                    const score = scores[criterion.id]; // Usamos el score individual del objeto 'scores'
                     doc.text(`${criterion.name}: ${score} / ${criterion.maxScore}`, 25, pdfYPos);
                     pdfYPos += 8;
                 });
@@ -674,7 +677,7 @@ Excelente (15–20)
                     const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'text/plain;charset=utf-8', // ¡SOLUCIÓN CLAVE PARA CORS!
                         },
                         body: JSON.stringify(dataToSend),
                     });
