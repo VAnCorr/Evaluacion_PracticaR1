@@ -30,15 +30,16 @@
             --color-feedback-success-bg: #f0fdf4; /* Fondo para mensajes de éxito (ej. resultados) */
             --color-feedback-success-border: #dcfce7; /* Borde para mensajes de éxito */
 
-            /* Tipografías */
-            --font-heading: 'Poppins', sans-serif;
-            --font-body: 'Inter', sans-serif;
+            /* Tipografías con fallbacks */
+            --font-heading: 'Poppins', 'Arial Black', 'Helvetica', sans-serif;
+            --font-body: 'Inter', 'Arial', 'Helvetica', sans-serif;
         }
 
         /* Base styles and custom classes */
         body {
             background: linear-gradient(135deg, var(--color-light-green) 0%, rgba(234, 253, 230, 0.5) 100%);
             color: var(--color-text-body);
+            font-family: var(--font-body);
         }
 
         .font-poppins {
@@ -51,10 +52,22 @@
 
         /* General Container */
         .container {
-            @apply shadow-xl rounded-xl p-6 md:p-10 mb-8 transition-all duration-300 ease-in-out;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease-in-out;
         }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 2.5rem;
+            }
+        }
+        
         .container:hover {
-            @apply transform scale-[1.005] shadow-2xl; /* Sutil aumento de escala y sombra al pasar el ratón */
+            transform: scale(1.005);
+            box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.35);
         }
 
         /* Main Heading */
@@ -64,16 +77,23 @@
 
         /* Section Cards (Unified Style) */
         .section-card {
-            background-color: var(--color-light-green); /* Fondo de la tarjeta */
-            border: 1px solid var(--color-medium-green); /* Borde con el verde medio */
-            @apply p-6 rounded-lg shadow-md transition-all duration-200 ease-in-out;
-            /* Mayor padding en dispositivos grandes para más aire */
-            @screen md {
-                @apply p-8;
+            background-color: var(--color-light-green);
+            border: 1px solid var(--color-medium-green);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        
+        @media (min-width: 768px) {
+            .section-card {
+                padding: 2rem;
             }
         }
+        
         .section-card:hover {
-            @apply shadow-lg transform translate-y-[-2px]; /* Ligero levantamiento y sombra más profunda */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
 
         /* Special style for Results section */
@@ -86,11 +106,23 @@
 
         /* Section Titles */
         .section-title {
-            @apply text-xl md:text-2xl font-poppins font-semibold mb-6 pb-3 border-b border-gray-300;
-            color: var(--color-deep-turquoise); /* Título con el turquesa profundo */
+            font-size: 1.25rem;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #d1d5db;
+            color: var(--color-deep-turquoise);
         }
+        
+        @media (min-width: 768px) {
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+        
         .section-title span.font-normal {
-            color: var(--color-text-body); /* Para el subtítulo "0-20 puntos" */
+            color: var(--color-text-body);
         }
 
         /* Accent heading for specific sections (e.g., initial info) */
@@ -100,32 +132,43 @@
 
         /* Results section heading and score values */
         .text-results-heading {
-            color: var(--color-medium-green); /* Verde medio para el título de resultados */
+            color: var(--color-medium-green);
         }
         .text-score-value {
-            color: var(--color-vibrant-green); /* Verde vibrante para los valores de puntaje */
+            color: var(--color-vibrant-green);
         }
-
 
         /* Input Labels */
         .input-label {
-            @apply block text-gray-700 text-sm font-semibold mb-2;
+            display: block;
+            color: #374151;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
         }
 
         /* Input Fields & Selectors */
         .input-field {
-            background-color: var(--color-light-green); /* Fondo verde claro */
-            border: 1px solid var(--color-medium-green); /* Borde verde medio */
-            color: var(--color-text-body); /* Color del texto */
-            @apply shadow-sm appearance-none rounded-md w-full py-2.5 px-4 leading-tight transition-all duration-200 ease-in-out;
+            background-color: var(--color-light-green);
+            border: 1px solid var(--color-medium-green);
+            color: var(--color-text-body);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            appearance: none;
+            border-radius: 0.375rem;
+            width: 100%;
+            padding: 0.625rem 1rem;
+            line-height: 1.25;
+            transition: all 0.2s ease-in-out;
         }
+        
         .input-field::placeholder {
-            color: rgba(27, 103, 107, 0.6); /* Turquesa con opacidad para placeholder */
+            color: rgba(27, 103, 107, 0.6);
         }
+        
         .input-field:focus {
-            @apply outline-none ring-2 ring-offset-1 shadow-md;
-            border-color: var(--color-vibrant-green); /* Borde del focus con verde vibrante */
-            box-shadow: 0 0 0 3px rgba(136, 196, 37, 0.5); /* Anillo de focus con el color vibrante */
+            outline: none;
+            border-color: var(--color-vibrant-green);
+            box-shadow: 0 0 0 3px rgba(136, 196, 37, 0.5), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         /* Specific style for select dropdowns for consistency */
@@ -133,47 +176,103 @@
             background-color: var(--color-light-green);
             border: 1px solid var(--color-medium-green);
             color: var(--color-text-body);
-            @apply appearance-none block w-24 rounded-md py-2.5 px-3 pr-8 shadow-sm cursor-pointer transition-all duration-200 ease-in-out;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath fill='%231b676b' d='M10 12l-4-4h8l-4 4z'/%3e%3c/svg%3e"); /* Flecha SVG en turquesa profundo */
+            appearance: none;
+            display: block;
+            width: 6rem;
+            border-radius: 0.375rem;
+            padding: 0.625rem 0.75rem;
+            padding-right: 2rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath fill='%231b676b' d='M10 12l-4-4h8l-4 4z'/%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 0.7rem center;
             background-size: 0.8rem 0.8rem;
         }
+        
         .score-selector:focus {
-            @apply outline-none ring-2 ring-offset-1 shadow-md;
+            outline: none;
             border-color: var(--color-vibrant-green);
-            box-shadow: 0 0 0 3px rgba(136, 196, 37, 0.5);
+            box-shadow: 0 0 0 3px rgba(136, 196, 37, 0.5), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         /* Buttons */
         .btn-primary {
             background-color: var(--color-vibrant-green);
-            color: var(--color-text-light); /* Texto blanco para alto contraste */
-            @apply inline-flex items-center justify-center font-semibold py-3 px-8 rounded-lg shadow-md transition duration-300 ease-in-out transform text-lg;
+            color: var(--color-text-light);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            transform: translateY(0);
+            font-size: 1.125rem;
+            border: none;
+            cursor: pointer;
         }
-        .btn-primary:hover {
-            background-color: #71a91f; /* Un tono más oscuro del verde vibrante para hover */
-            @apply -translate-y-0.5 shadow-lg;
+        
+        .btn-primary:hover:not(:disabled) {
+            background-color: #71a91f;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
+        
         .btn-primary:focus {
-            @apply outline-none ring-4 ring-offset-1;
-            box-shadow: 0 0 0 4px rgba(136, 196, 37, 0.6); /* Anillo de focus en verde vibrante */
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(136, 196, 37, 0.6);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .btn-secondary {
-            background-color: var(--color-medium-green); /* Fondo verde medio */
-            color: var(--color-text-light); /* Texto blanco para alto contraste */
-            @apply inline-flex items-center justify-center font-semibold py-3 px-8 rounded-lg shadow-md transition duration-300 ease-in-out transform text-lg cursor-not-allowed opacity-75;
+            background-color: var(--color-medium-green);
+            color: var(--color-text-light);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            transform: translateY(0);
+            font-size: 1.125rem;
+            border: none;
+            cursor: pointer;
         }
-        .btn-secondary:hover:not(:disabled) { /* Solo se aplica hover si no está deshabilitado */
-            background-color: #427e3d; /* Un tono más oscuro del verde medio para hover */
-            @apply -translate-y-0.5 shadow-lg;
+        
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #427e3d;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
+        
         .btn-secondary:focus {
-            @apply outline-none ring-4 ring-offset-1;
-            box-shadow: 0 0 0 4px rgba(81, 149, 72, 0.6); /* Anillo de focus en verde medio */
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(81, 149, 72, 0.6);
+        }
+        
+        .btn-secondary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
+        .bg-gray-400 {
+            background-color: #9ca3af !important;
+        }
+
+        .cursor-not-allowed {
+            cursor: not-allowed !important;
+        }
 
         /* Tooltip styles */
         .tooltip-container {
@@ -185,8 +284,8 @@
         .tooltip-text {
             visibility: hidden;
             width: 240px;
-            background-color: var(--color-deep-turquoise); /* Fondo del tooltip turquesa profundo */
-            color: var(--color-light-green); /* Texto del tooltip verde claro */
+            background-color: var(--color-deep-turquoise);
+            color: var(--color-light-green);
             text-align: center;
             border-radius: 8px;
             padding: 10px 12px;
@@ -219,9 +318,213 @@
             margin-left: -8px;
             border-width: 8px;
             border-style: solid;
-            border-color: var(--color-deep-turquoise) transparent transparent transparent; /* Flecha del tooltip turquesa profundo */
+            border-color: var(--color-deep-turquoise) transparent transparent transparent;
         }
 
+        /* Utility Classes */
+        .grid {
+            display: grid;
+        }
+        
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+        
+        @media (min-width: 768px) {
+            .md\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            .md\:col-span-1 {
+                grid-column: span 1 / span 1;
+            }
+            .md\:flex-row {
+                flex-direction: row;
+            }
+            .md\:items-center {
+                align-items: center;
+            }
+            .md\:w-3\/4 {
+                width: 75%;
+            }
+            .md\:w-1\/4 {
+                width: 25%;
+            }
+            .md\:mb-0 {
+                margin-bottom: 0;
+            }
+        }
+        
+        .gap-6 {
+            gap: 1.5rem;
+        }
+        
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-col {
+            flex-direction: column;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        .justify-center {
+            justify-content: center;
+        }
+        
+        .justify-end {
+            justify-content: flex-end;
+        }
+        
+        .items-start {
+            align-items: flex-start;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .border-b {
+            border-bottom-width: 1px;
+        }
+        
+        .border-gray-200 {
+            border-color: #e5e7eb;
+        }
+        
+        .pb-4 {
+            padding-bottom: 1rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+        
+        .ml-2 {
+            margin-left: 0.5rem;
+        }
+        
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+        
+        .last\:border-b-0:last-child {
+            border-bottom-width: 0;
+        }
+        
+        .text-lg {
+            font-size: 1.125rem;
+        }
+        
+        .text-xl {
+            font-size: 1.25rem;
+        }
+        
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+        
+        @media (min-width: 768px) {
+            .md\:text-xl {
+                font-size: 1.25rem;
+            }
+            .md\:text-5xl {
+                font-size: 3rem;
+            }
+        }
+        
+        .font-medium {
+            font-weight: 500;
+        }
+        
+        .font-bold {
+            font-weight: 700;
+        }
+        
+        .font-extrabold {
+            font-weight: 800;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-gray-800 {
+            color: #1f2937;
+        }
+        
+        .text-gray-600 {
+            color: #4b5563;
+        }
+        
+        .text-gray-500 {
+            color: #6b7280;
+        }
+        
+        .text-base {
+            font-size: 1rem;
+        }
+        
+        .font-normal {
+            font-weight: 400;
+        }
+        
+        .tracking-tight {
+            letter-spacing: -0.025em;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .max-w-4xl {
+            max-width: 56rem;
+        }
+        
+        .bg-white {
+            background-color: #ffffff;
+        }
+        
+        .p-4 {
+            padding: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .md\:p-8 {
+                padding: 2rem;
+            }
+        }
+        
+        .transition-all {
+            transition-property: all;
+        }
+        
+        .duration-300 {
+            transition-duration: 0.3s;
+        }
+        
+        .ease-in-out {
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
         /* Print Styles */
         @media print {
@@ -244,7 +547,7 @@
             h1 {
                 font-size: 24pt !important;
                 margin-bottom: 1rem !important;
-                color: var(--color-deep-turquoise) !important; /* Turquesa profundo en impresión */
+                color: var(--color-deep-turquoise) !important;
                 font-family: var(--font-heading) !important;
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
@@ -252,71 +555,43 @@
             h2.section-title {
                 font-size: 16pt !important;
                 margin-bottom: 0.8rem !important;
-                border-bottom: 1px solid var(--color-border-light) !important; /* Borde claro en impresión */
+                border-bottom: 1px solid var(--color-border-light) !important;
                 padding-bottom: 0.5rem !important;
-                color: var(--color-deep-turquoise) !important; /* Turquesa profundo en impresión */
+                color: var(--color-deep-turquoise) !important;
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
             }
             section.section-card {
-                border: 1px solid var(--color-medium-green) !important; /* Borde verde medio en impresión */
+                border: 1px solid var(--color-medium-green) !important;
                 padding: 1rem !important;
                 margin-bottom: 1rem !important;
                 box-shadow: none !important;
-                background-color: var(--color-light-green) !important; /* Fondo verde claro en impresión */
+                background-color: var(--color-light-green) !important;
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
             }
             section.section-card.bg-results-card {
-                background-color: var(--color-feedback-success-bg) !important; /* Fondo de resultados en impresión */
+                background-color: var(--color-feedback-success-bg) !important;
             }
-            .grid-cols-1, .md\:grid-cols-3 {
-                display: block !important;
-            }
-            .md\:col-span-1 {
-                margin-bottom: 0.5rem !important;
-            }
-            .shadow, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
-                box-shadow: none !important;
-            }
-            /* Hide buttons and unnecessary elements for print */
             #exportPdfBtn, #saveGoogleSheetsBtn, .tooltip-container .tooltip-text {
                 display: none !important;
             }
-            /* Ensure text colors are legible for print */
             .text-main-heading, .text-accent-heading, .text-results-heading {
-                color: var(--color-deep-turquoise) !important; /* Turquesa profundo en impresión */
+                color: var(--color-deep-turquoise) !important;
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
             }
             .text-score-value {
-                color: var(--color-vibrant-green) !important; /* Verde vibrante en impresión */
+                color: var(--color-vibrant-green) !important;
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
-            }
-            .last\:border-b-0 {
-                border-bottom: 1px solid var(--color-border-light) !important;
-            }
-            .md\:w-3\/4, .md\:w-1\/4 {
-                width: auto !important;
-            }
-            .score-selector {
-                width: 60px !important;
-                padding-right: 0.5rem !important;
-            }
-            .tooltip-container {
-                pointer-events: none !important;
-            }
-            /* Ocultar el sutil degradado del body en impresión */
-            body.bg-gradient-custom {
-                background: none !important;
             }
         }
     </style>
 </head>
 <body class="bg-gradient-custom font-inter leading-normal tracking-normal p-4 md:p-8 text-gray-800">
 
-    <div class="container mx-auto max-w-4xl bg-white shadow-xl rounded-xl p-6 md:p-10 mb-8 transition-all duration-300 ease-in-out transform hover:scale-[1.005]">
+    <div class="container mx-auto max-w-4xl bg-white">
         <h1 class="text-3xl md:text-5xl font-poppins font-extrabold text-center text-main-heading mb-8 tracking-tight">
             Evaluación Práctica <br class="md:hidden"> – RCP y Manejo de la Vía Aérea
         </h1>
@@ -370,13 +645,13 @@
             <button id="exportPdfBtn" class="btn-primary">
                 <i class="fas fa-file-pdf mr-2"></i> Exportar como PDF
             </button>
-            <button id="saveGoogleSheetsBtn" class="btn-secondary" disabled title="Esta función requiere configuración de backend o API de Google Sheets.">
-                <i class="fas fa-save mr-2"></i> Guardar / Enviar a Google Sheets (Opcional)
+            <button id="saveGoogleSheetsBtn" class="btn-secondary">
+                <i class="fas fa-save mr-2"></i> Guardar en Google Sheets
             </button>
         </section>
     </div>
 
-    <!-- jspdf library (se mantiene CDN porque es externa) -->
+    <!-- jspdf library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <!-- JavaScript personalizado -->
@@ -392,26 +667,23 @@
             const exportPdfBtn = document.getElementById('exportPdfBtn');
             const saveGoogleSheetsBtn = document.getElementById('saveGoogleSheetsBtn');
 
-            // ** TU URL DE GOOGLE APPS SCRIPT - ¡ACTUALIZADA A LA ÚLTIMA VERSIÓN QUE ME DISTE! **
-            const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwW4ldHr1TKBBKSz0kgVwYmFyzON3HajicOjHtI3PmAYfyeeBnoxAr9lME1rPY-epGn/exec';
+            // ** URL DE GOOGLE APPS SCRIPT ACTUALIZADA **
+            const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyj9hyVGtlrB_Lb_EyIkzdIQUs8AdLhZhP3vsVK8JUKQWCLYzJ0CirtVRJgYRnlG2A_/exec';
 
             // Definición de los criterios de evaluación con sus puntajes máximos
-            // Importante: Asegúrate de que esta definición coincida con la que deseas.
-            // Para tu caso, si "Uso de datos" y "Manejo post paro" son de 15 puntos:
             const criteria = [
                 { id: 'rcpTechnique', name: 'Técnica de RCP y manejo de vía aérea', maxScore: 15 },
                 { id: 'clinicalEvaluation', name: 'Evaluación clínica inicial y diagnóstico', maxScore: 20 },
-                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 20 }, // Vuelve a 20 según el problema inicial
+                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 15 },
                 { id: 'communicationLeadership', name: 'Comunicación y liderazgo en el equipo', maxScore: 20 },
                 { id: 'ethicalAttitude', name: 'Actitud ética, reflexiva y profesional', maxScore: 15 },
-                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 20 } // Vuelve a 20 según el problema inicial
+                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 15 }
             ];
 
-            // Calculamos el puntaje máximo posible de forma dinámica.
-            // Esto sumará (15 + 20 + 20 + 20 + 15 + 20) = 110 puntos.
-            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0); // Esto dará 110
+            // Calculamos el puntaje máximo posible
+            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0);
 
-            // Escala de calificación para el tooltip (se refiere a la interpretación de un score individual de 0-20)
+            // Escala de calificación para el tooltip
             const scoreScaleTooltip = `
 Insuficiente (0–4)
 Aceptable (5–9)
@@ -451,9 +723,8 @@ Excelente (15–20)
                 });
 
                 // Escalamos el puntaje a un total sobre 100
-                // (puntaje_obtenido / puntaje_maximo_real) * 100
                 const scaledTotalScore = (rawTotalScore / ACTUAL_MAXIMUM_POSSIBLE_SCORE) * 100;
-                const displayedScore = Math.round(scaledTotalScore); // Redondeamos para un número entero legible
+                const displayedScore = Math.round(scaledTotalScore);
                 
                 totalScoreSpan.textContent = displayedScore;
                 finalGradeSpan.textContent = getFinalGrade(displayedScore);
@@ -497,230 +768,4 @@ Excelente (15–20)
                 }
 
                 const originalBtnText = exportPdfBtn.innerHTML;
-                exportPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generando PDF...';
-                exportPdfBtn.disabled = true;
-                exportPdfBtn.classList.remove('btn-primary');
-                exportPdfBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
-
-                setTimeout(() => {
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF();
-
-                    const date = evaluationDateInput.value;
-                    const resident = residentNameInput.value;
-                    const evaluator = evaluatorNameInput.value;
-                    const totalScore = totalScoreSpan.textContent;
-                    const finalGrade = finalGradeSpan.textContent;
-
-                    let yPos = 20;
-
-                    doc.setFont('Poppins', 'bold');
-                    doc.setFontSize(26);
-                    doc.setTextColor(27, 103, 107);
-                    doc.text("Evaluación Práctica", 105, yPos, { align: 'center' });
-                    yPos += 10;
-                    doc.text("RCP y Manejo de la Vía Aérea", 105, yPos, { align: 'center' });
-                    yPos += 20;
-
-                    doc.setFont('Inter', 'normal');
-                    doc.setFontSize(12);
-                    doc.setTextColor(55, 65, 81);
-                    doc.text(`Fecha de Evaluación: ${date}`, 20, yPos);
-                    yPos += 7;
-                    doc.text(`Residente Evaluado: ${resident}`, 20, yPos);
-                    yPos += 7;
-                    doc.text(`Evaluador: ${evaluator}`, 20, yPos);
-                    yPos += 15;
-
-                    doc.setFont('Poppins', 'semibold');
-                    doc.setFontSize(18);
-                    doc.setTextColor(27, 103, 107);
-                    doc.text("Criterios de Evaluación:", 20, yPos);
-                    yPos += 12;
-
-                    doc.setFont('Inter', 'normal');
-                    doc.setFontSize(12);
-                    doc.setTextColor(0, 0, 0);
-
-                    criteria.forEach(criterion => {
-                        const selector = document.getElementById(criterion.id);
-                        const score = selector ? selector.value : '0';
-                        doc.text(`${criterion.name}: ${score} / ${criterion.maxScore}`, 25, yPos);
-                        yPos += 8;
-                    });
-
-                    yPos += 10;
-
-                    doc.setFont('Poppins', 'semibold');
-                    doc.setFontSize(18);
-                    doc.setTextColor(27, 103, 107);
-                    doc.text("Resultados Finales:", 20, yPos);
-                    yPos += 12;
-
-                    doc.setFont('Inter', 'bold');
-                    doc.setFontSize(16);
-                    doc.setTextColor(136, 196, 37);
-                    doc.text(`Puntaje Total: ${totalScore} / 100`, 25, yPos);
-                    yPos += 9;
-                    doc.text(`Calificación Final: ${finalGrade}`, 25, yPos);
-                    yPos += 15;
-
-                    const cleanResident = resident.replace(/[^a-zA-Z0-9_ -]/g, '_');
-                    doc.save(`Evaluacion_RCP_${cleanResident}_${date}.pdf`);
-
-                    exportPdfBtn.innerHTML = originalBtnText;
-                    exportPdfBtn.disabled = false;
-                    exportPdfBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
-                    exportPdfBtn.classList.add('btn-primary');
-                }, 500);
-            });
-
-            // Habilitar el botón de guardar/enviar a Google Sheets
-            saveGoogleSheetsBtn.disabled = false;
-            saveGoogleSheetsBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-            saveGoogleSheetsBtn.classList.add('btn-primary');
-            saveGoogleSheetsBtn.title = 'Guardar evaluación en Google Sheets y Drive.';
-
-            // Función para enviar datos a Google Sheets y Drive
-            saveGoogleSheetsBtn.addEventListener('click', async () => {
-                if (!validateForm()) {
-                    return;
-                }
-
-                const date = evaluationDateInput.value;
-                const residentName = residentNameInput.value;
-                const evaluatorName = evaluatorNameInput.value;
-                const totalScore = totalScoreSpan.textContent;
-                const finalGrade = finalGradeSpan.textContent;
-
-                const scores = {};
-                criteria.forEach(criterion => { // Iterar sobre 'criteria' para obtener los IDs y valores
-                    const selector = document.getElementById(criterion.id);
-                    scores[criterion.id] = parseInt(selector.value, 10);
-                });
-
-                // Generar el PDF en memoria (Base64)
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                let pdfYPos = 20;
-
-                doc.setFont('Poppins', 'bold');
-                doc.setFontSize(26);
-                doc.setTextColor(27, 103, 107);
-                doc.text("Evaluación Práctica", 105, pdfYPos, { align: 'center' });
-                pdfYPos += 10;
-                doc.text("RCP y Manejo de la Vía Aérea", 105, pdfYPos, { align: 'center' });
-                pdfYPos += 20;
-
-                doc.setFont('Inter', 'normal');
-                doc.setFontSize(12);
-                doc.setTextColor(55, 65, 81);
-                doc.text(`Fecha de Evaluación: ${date}`, 20, pdfYPos);
-                pdfYPos += 7;
-                doc.text(`Residente Evaluado: ${residentName}`, 20, pdfYPos);
-                pdfYPos += 7;
-                doc.text(`Evaluador: ${evaluatorName}`, 20, pdfYPos);
-                pdfYPos += 15;
-
-                doc.setFont('Poppins', 'semibold');
-                doc.setFontSize(18);
-                doc.setTextColor(27, 103, 107);
-                doc.text("Criterios de Evaluación:", 20, pdfYPos);
-                pdfYPos += 12;
-
-                doc.setFont('Inter', 'normal');
-                doc.setFontSize(12);
-                doc.setTextColor(0, 0, 0);
-
-                criteria.forEach(criterion => {
-                    const score = scores[criterion.id]; // Usamos el score individual del objeto 'scores'
-                    doc.text(`${criterion.name}: ${score} / ${criterion.maxScore}`, 25, pdfYPos);
-                    pdfYPos += 8;
-                });
-
-                pdfYPos += 10;
-
-                doc.setFont('Poppins', 'semibold');
-                doc.setFontSize(18);
-                doc.setTextColor(27, 103, 107);
-                doc.text("Resultados Finales:", 20, pdfYPos);
-                pdfYPos += 12;
-
-                doc.setFont('Inter', 'bold');
-                doc.setFontSize(16);
-                doc.setTextColor(136, 196, 37);
-                doc.text(`Puntaje Total: ${totalScore} / 100`, 25, pdfYPos);
-                pdfYPos += 9;
-                doc.text(`Calificación Final: ${finalGrade}`, 25, pdfYPos);
-
-                const pdfDataUri = doc.output('datauristring');
-                const pdfBase64 = pdfDataUri.split(',')[1];
-
-                const dataToSend = {
-                    date: date,
-                    residentName: residentName,
-                    evaluatorName: evaluatorName,
-                    scores: scores,
-                    totalScore: totalScore,
-                    finalGrade: finalGrade,
-                    pdfData: pdfBase64
-                };
-
-                // Enviar los datos a Google Apps Script
-                const originalBtnText = saveGoogleSheetsBtn.innerHTML;
-                saveGoogleSheetsBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Guardando...';
-                saveGoogleSheetsBtn.disabled = true;
-                saveGoogleSheetsBtn.classList.remove('btn-primary', 'btn-secondary');
-                saveGoogleSheetsBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
-
-                try {
-                    const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'text/plain;charset=utf-8', // ¡SOLUCIÓN CLAVE PARA CORS!
-                        },
-                        body: JSON.stringify(dataToSend),
-                    });
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`Error en la respuesta del servidor (${response.status}): ${errorText}`);
-                    }
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        alert('¡Evaluación guardada exitosamente en Google Sheets y Drive!');
-                        console.log('Respuesta de Apps Script:', result.message);
-                    } else {
-                        alert('Error al guardar la evaluación: ' + result.message);
-                        console.error('Error de Apps Script:', result.message);
-                    }
-                } catch (error) {
-                    let errorMessage = 'Hubo un problema de conexión o un error inesperado al guardar.';
-                    if (error.message.includes('Failed to fetch') || error.message.includes('ERR_INTERNET_DISCONNECTED')) {
-                        errorMessage = '¡Problema de conexión a Internet! Asegúrate de estar online.';
-                    } else if (error.message.includes('CORS policy') || error.message.includes('blocked by CORS')) {
-                            errorMessage = 'Error de seguridad al conectar con Google. Por favor, asegúrate de que tu Google Apps Script esté desplegado como "Cualquier usuario".';
-                    } else if (error.message.includes('Error en la respuesta del servidor')) {
-                        errorMessage = `Error del servidor de Google: ${error.message}`;
-                    }
-                    alert(errorMessage);
-                    console.error('Error al enviar los datos:', error);
-                } finally {
-                    saveGoogleSheetsBtn.innerHTML = originalBtnText;
-                    saveGoogleSheetsBtn.disabled = false;
-                    saveGoogleSheetsBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
-                    saveGoogleSheetsBtn.classList.add('btn-primary');
-                }
-            });
-
-            // Inicializar el calculo de puntaje al cargar la página
-            updateTotalScoreAndGrade();
-
-            // Establecer la fecha actual por defecto en el campo de fecha
-            evaluationDateInput.valueAsDate = new Date();
-        });
-    </script>
-</body>
-</html>
+                exportPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>
