@@ -379,39 +379,39 @@
     <!-- jspdf library (se mantiene CDN porque es externa) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <!-- JavaScript personalizado (anteriormente script.js) -->
+    <!-- JavaScript personalizado -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Referencias a los elementos del DOM
             const evaluationDateInput = document.getElementById('evaluationDate');
             const residentNameInput = document.getElementById('residentName');
             const evaluatorNameInput = document.getElementById('evaluatorName');
-            const rubricContainer = document.getElementById('rubricContainer'); // Este es el contenedor donde se insertan los criterios
+            const rubricContainer = document.getElementById('rubricContainer');
             const totalScoreSpan = document.getElementById('totalScore');
             const finalGradeSpan = document.getElementById('finalGrade');
             const exportPdfBtn = document.getElementById('exportPdfBtn');
-            const saveGoogleSheetsBtn = document.getElementById('saveGoogleSheetsBtn'); // Referencia al botón de guardar
+            const saveGoogleSheetsBtn = document.getElementById('saveGoogleSheetsBtn');
 
-            // ** TU URL DE GOOGLE APPS SCRIPT - YA ACTUALIZADA AQUÍ **
-            const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbziJ5-2YTOWL_tXd7uA-9ujWBzwJ0aMAG-jHqHOQCtqPFzKbdjSYhwKv_7rimHsy4-T/exec';
+            // ** TU URL DE GOOGLE APPS SCRIPT - ¡ACTUALIZADA A LA ÚLTIMA VERSIÓN QUE ME DISTE! **
+            const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwW4ldHr1TKBBKSz0kgVwYmFyzON3HajicOjHtI3PmAYfyeeBnoxAr9lME1rPY-epGn/exec';
 
-            // ** DEFINICIÓN DE LOS CRITERIOS DE EVALUACIÓN CON SUS PUNTAJES MÁXIMOS **
-            // Los criterios con 15 puntos son: "Técnica de RCP", "Actitud ética", "Uso de datos", "Manejo post paro"
+            // Definición de los criterios de evaluación con sus puntajes máximos
+            // Importante: Asegúrate de que esta definición coincida con la que deseas.
+            // Para tu caso, si "Uso de datos" y "Manejo post paro" son de 15 puntos:
             const criteria = [
                 { id: 'rcpTechnique', name: 'Técnica de RCP y manejo de vía aérea', maxScore: 15 },
                 { id: 'clinicalEvaluation', name: 'Evaluación clínica inicial y diagnóstico', maxScore: 20 },
-                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 15 }, // <-- CAMBIADO A 15
+                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 15 }, // Cambiado a 15
                 { id: 'communicationLeadership', name: 'Comunicación y liderazgo en el equipo', maxScore: 20 },
                 { id: 'ethicalAttitude', name: 'Actitud ética, reflexiva y profesional', maxScore: 15 },
-                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 15 } // <-- CAMBIADO A 15
+                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 15 } // Cambiado a 15
             ];
 
             // Calculamos el puntaje máximo posible de forma dinámica.
-            // Ahora sumará (15 + 20 + 15 + 20 + 15 + 15) = 100 puntos exactos.
-            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0); // Esto dará 100
+            // Esto sumará (15 + 20 + 15 + 20 + 15 + 15) = 100 puntos exactos.
+            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0);
 
             // Escala de calificación para el tooltip (se refiere a la interpretación de un score individual de 0-20)
-            // Para simplificar, mantenemos la misma escala para la "ayuda" aunque el máximo de algunos criterios sea 15.
             const scoreScaleTooltip = `
 Insuficiente (0–4)
 Aceptable (5–9)
@@ -419,7 +419,7 @@ Bueno (10–14)
 Excelente (15–20)
             `.trim();
 
-            // ** Lógica para GENERAR DINÁMICAMENTE los CRITERIOS DE EVALUACIÓN EN EL HTML **
+            // Generar dinámicamente los criterios de evaluación en el HTML
             criteria.forEach(criterion => {
                 const criterionDiv = document.createElement('div');
                 criterionDiv.className = 'flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-200 pb-4 mb-4 last:border-b-0';
@@ -434,32 +434,30 @@ Excelente (15–20)
                         </div>
                     </div>
                 `;
-                // Aquí es donde se añade el criterio al contenedor en el HTML
                 rubricContainer.appendChild(criterionDiv);
             });
 
-            // Añadir listeners a los selectores de puntaje para que actualicen el total
+            // Añadir listeners a los selectores de puntaje
             const scoreSelectors = document.querySelectorAll('.score-selector');
             scoreSelectors.forEach(selector => {
                 selector.addEventListener('change', updateTotalScoreAndGrade);
             });
 
-            // Función principal para calcular y mostrar el puntaje total y la calificación final
+            // Función para calcular y mostrar el puntaje total y la calificación final
             function updateTotalScoreAndGrade() {
-                let rawTotalScore = 0; // Este es el puntaje sumado de los selectores (0-100)
+                let rawTotalScore = 0;
                 scoreSelectors.forEach(selector => {
                     rawTotalScore += parseInt(selector.value, 10);
                 });
 
-                // ** Lógica CLAVE para escalar el puntaje a sobre 100 **
-                // Dado que ACTUAL_MAXIMUM_POSSIBLE_SCORE es ahora 100, la escalada se simplifica.
-                const displayedScore = rawTotalScore; // Ya no es necesario escalar
-                
+                // Si el puntaje máximo posible es 100, no hay necesidad de escalar.
+                const displayedScore = rawTotalScore; // Directamente el total sumado
+
                 totalScoreSpan.textContent = displayedScore;
-                finalGradeSpan.textContent = getFinalGrade(displayedScore); // La calificación se basa en el score escalado
+                finalGradeSpan.textContent = getFinalGrade(displayedScore);
             }
 
-            // Función para determinar la calificación final basada en el puntaje total (ya escalado a 100)
+            // Función para determinar la calificación final
             function getFinalGrade(score) {
                 if (score >= 90) {
                     return 'Excelente';
@@ -472,7 +470,7 @@ Excelente (15–20)
                 }
             }
 
-            // Función para validar que todos los campos obligatorios estén completos
+            // Función para validar campos obligatorios
             function validateForm() {
                 const requiredInputs = [
                     evaluationDateInput,
@@ -490,7 +488,7 @@ Excelente (15–20)
                 return true;
             }
 
-            // Función para exportar a PDF (descarga en el navegador)
+            // Función para exportar a PDF
             exportPdfBtn.addEventListener('click', () => {
                 if (!validateForm()) {
                     return;
@@ -502,14 +500,14 @@ Excelente (15–20)
                 exportPdfBtn.classList.remove('btn-primary');
                 exportPdfBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
 
-                setTimeout(() => { // Pequeño retraso para que el usuario vea el spinner antes de descargar
+                setTimeout(() => {
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF();
 
                     const date = evaluationDateInput.value;
                     const resident = residentNameInput.value;
                     const evaluator = evaluatorNameInput.value;
-                    const totalScore = totalScoreSpan.textContent; // Este ya es el score escalado (0-100)
+                    const totalScore = totalScoreSpan.textContent;
                     const finalGrade = finalGradeSpan.textContent;
 
                     let yPos = 20;
@@ -544,8 +542,8 @@ Excelente (15–20)
 
                     criteria.forEach(criterion => {
                         const selector = document.getElementById(criterion.id);
-                        const score = selector ? selector.value : '0'; // Default to 0 if no score
-                        doc.text(`${criterion.name}: ${score} / ${criterion.maxScore}`, 25, yPos); // Muestra maxScore específico
+                        const score = selector ? selector.value : '0';
+                        doc.text(`${criterion.name}: ${score} / ${criterion.maxScore}`, 25, yPos);
                         yPos += 8;
                     });
 
@@ -565,11 +563,9 @@ Excelente (15–20)
                     doc.text(`Calificación Final: ${finalGrade}`, 25, yPos);
                     yPos += 15;
 
-                    // Asegúrate de que el nombre del residente esté limpio para el nombre del archivo
                     const cleanResident = resident.replace(/[^a-zA-Z0-9_ -]/g, '_');
                     doc.save(`Evaluacion_RCP_${cleanResident}_${date}.pdf`);
 
-                    // Restaurar botón
                     exportPdfBtn.innerHTML = originalBtnText;
                     exportPdfBtn.disabled = false;
                     exportPdfBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
@@ -577,14 +573,13 @@ Excelente (15–20)
                 }, 500);
             });
 
-            // Habilitar el botón de guardar/enviar a Google Sheets y añadir el listener
+            // Habilitar el botón de guardar/enviar a Google Sheets
             saveGoogleSheetsBtn.disabled = false;
             saveGoogleSheetsBtn.classList.remove('opacity-75', 'cursor-not-allowed');
             saveGoogleSheetsBtn.classList.add('btn-primary');
             saveGoogleSheetsBtn.title = 'Guardar evaluación en Google Sheets y Drive.';
 
-
-            // FUNCIÓN PARA ENVIAR DATOS A GOOGLE SHEETS Y DRIVE
+            // Función para enviar datos a Google Sheets y Drive
             saveGoogleSheetsBtn.addEventListener('click', async () => {
                 if (!validateForm()) {
                     return;
@@ -593,15 +588,15 @@ Excelente (15–20)
                 const date = evaluationDateInput.value;
                 const residentName = residentNameInput.value;
                 const evaluatorName = evaluatorNameInput.value;
-                const totalScore = totalScoreSpan.textContent; // Score escalado (0-100)
+                const totalScore = totalScoreSpan.textContent;
                 const finalGrade = finalGradeSpan.textContent;
 
-                const scores = {}; // Guarda los puntajes individuales (0-20 o 0-15)
+                const scores = {};
                 scoreSelectors.forEach(selector => {
                     scores[selector.id] = parseInt(selector.value, 10);
                 });
 
-                // 2. Generar el PDF en memoria (Base64) para el envío
+                // Generar el PDF en memoria (Base64)
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 let pdfYPos = 20;
@@ -635,7 +630,7 @@ Excelente (15–20)
                 doc.setTextColor(0, 0, 0);
 
                 criteria.forEach(criterion => {
-                    const score = scores[criterion.id]; // Usamos el score individual del objeto 'scores'
+                    const score = scores[criterion.id];
                     doc.text(`${criterion.name}: ${score} / ${criterion.maxScore}`, 25, pdfYPos);
                     pdfYPos += 8;
                 });
@@ -656,19 +651,19 @@ Excelente (15–20)
                 doc.text(`Calificación Final: ${finalGrade}`, 25, pdfYPos);
 
                 const pdfDataUri = doc.output('datauristring');
-                const pdfBase64 = pdfDataUri.split(',')[1]; // Remover el prefijo 'data:application/pdf;base64,'
+                const pdfBase64 = pdfDataUri.split(',')[1];
 
                 const dataToSend = {
                     date: date,
                     residentName: residentName,
                     evaluatorName: evaluatorName,
-                    scores: scores, // Puntajes individuales por ID
-                    totalScore: totalScore, // Puntaje total escalado (0-100)
+                    scores: scores,
+                    totalScore: totalScore,
                     finalGrade: finalGrade,
-                    pdfData: pdfBase64 // PDF en Base64
+                    pdfData: pdfBase64
                 };
 
-                // 3. Enviar los datos a Google Apps Script
+                // Enviar los datos a Google Apps Script
                 const originalBtnText = saveGoogleSheetsBtn.innerHTML;
                 saveGoogleSheetsBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Guardando...';
                 saveGoogleSheetsBtn.disabled = true;
@@ -684,14 +679,12 @@ Excelente (15–20)
                         body: JSON.stringify(dataToSend),
                     });
 
-                    // Verificar si la respuesta fue OK (status 200-299)
                     if (!response.ok) {
-                        // Si la respuesta no es OK, intenta leer el error del servidor
-                        const errorText = await response.text(); // Lee el cuerpo de la respuesta como texto
+                        const errorText = await response.text();
                         throw new Error(`Error en la respuesta del servidor (${response.status}): ${errorText}`);
                     }
 
-                    const result = await response.json(); // Leer la respuesta JSON
+                    const result = await response.json();
 
                     if (result.success) {
                         alert('¡Evaluación guardada exitosamente en Google Sheets y Drive!');
@@ -701,20 +694,17 @@ Excelente (15–20)
                         console.error('Error de Apps Script:', result.message);
                     }
                 } catch (error) {
-                    // Este catch maneja errores de red, errores CORS no atrapados por el navegador,
-                    // y errores lanzados manualmente arriba si response.ok no es true.
                     let errorMessage = 'Hubo un problema de conexión o un error inesperado al guardar.';
                     if (error.message.includes('Failed to fetch') || error.message.includes('ERR_INTERNET_DISCONNECTED')) {
                         errorMessage = '¡Problema de conexión a Internet! Asegúrate de estar online.';
                     } else if (error.message.includes('CORS policy') || error.message.includes('blocked by CORS')) {
-                             errorMessage = 'Error de seguridad al conectar con Google. Por favor, asegúrate de que tu Google Apps Script esté desplegado como "Cualquier usuario".';
+                            errorMessage = 'Error de seguridad al conectar con Google. Por favor, asegúrate de que tu Google Apps Script esté desplegado como "Cualquier usuario".';
                     } else if (error.message.includes('Error en la respuesta del servidor')) {
                         errorMessage = `Error del servidor de Google: ${error.message}`;
                     }
                     alert(errorMessage);
                     console.error('Error al enviar los datos:', error);
                 } finally {
-                    // Restaurar el botón siempre
                     saveGoogleSheetsBtn.innerHTML = originalBtnText;
                     saveGoogleSheetsBtn.disabled = false;
                     saveGoogleSheetsBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
