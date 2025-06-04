@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación Práctica – RCP y Manejo de la Vía Aérea</title>
+    <!-- Google Fonts: Inter para texto general, Poppins para títulos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <!-- TailwindCSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- CSS Personalizado (anteriormente style.css) -->
+    <style>
+        /* Variables CSS para la nueva paleta de colores y tipografías consistentes */
+        :root {
+            /* Nueva Paleta de Colores */
+            --color-light-green: #eafde6;   /* Fondo o acentos sutiles */
+            --color-vibrant-green: #88c425; /* Botones primarios, resaltados */
+            --color-medium-green: #519548;  /* Elementos secundarios, bordes */
+            --color-deep-turquoise: #1b676b;/* Texto, encabezados, acentos principales */
+
+            /* Colores Derivados para UI - Contraste y propósito */
+            --color-text-body: #374151; /* Un gris oscuro para texto general */
+            --color-text-light: #f9fafb; /* Para texto sobre fondos oscuros */
+            --color-border-light: #d1d5db; /* Un gris claro para bordes sutiles */
+            --color-feedback-success-bg: #f0fdf4; /* Fondo para mensajes de éxito (ej. resultados) */
+            --color-feedback-success-border: #dcfce7; /* Borde para mensajes de éxito */
+
+            /* Tipografías */
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* Base styles and custom classes */
+        body {
+            background: linear-gradient(135deg, var(--color-light-green) 0%, rgba(234, 253, 230, 0.5) 100%);
+            color: var(--color-text-body);
+        }
+
+        .font-poppins {
+            font-family: var(--font-heading);
+        }
+
+        .font-inter {
+            font-family: var(--font-body);
+        }
+
+        /* General Container */
+        .container {
+            @apply shadow-xl rounded-xl p-6 md:p-10 mb-8 transition-all duration-300 ease-in-out;
+        }
+        .container:hover {
+            @apply transform scale-[1.005] shadow-2xl; /* Sutil aumento de escala y sombra al pasar el ratón */
+        }
+
+        /* Main Heading */
+        .text-main-heading {
+            color: var(--color-deep-turquoise);
+        }
+
+        /* Section Cards (Unified Style) */
+        .section-card {
+            background-color: var(--color-light-green); /* Fondo de la tarjeta */
+            border: 1px solid var(--color-medium-green); /* Borde con el verde medio */
+            @apply p-6 rounded-lg shadow-md transition-all duration-200 ease-in-out;
+            /* Mayor padding en dispositivos grandes para más aire */
+            @screen md {
+                @apply p-8;
+            }
+        }
+        .section-card:hover {
+            @apply shadow-lg transform translate-y-[-2px]; /* Ligero levantamiento y sombra más profunda */
+        }
+
+        /* Special style for Results section */
+        .section-card.bg-results-card {
+            background-color: var(--color-feedback-success-bg);
+        }
+        .section-card.border-results-border {
+            border-color: var(--color-feedback-success-border);
+        }
+
+        /* Section Titles */
+        .section-title {
+            @apply text-xl md:text-2xl font-poppins font-semibold mb-6 pb-3 border-b border-gray-300;
+            color: var(--color-deep-turquoise); /* Título con el turquesa profundo */
+        }
+        .section-title span.font-normal {
+            color: var(--color-text-body); /* Para el subtítulo "0-20 puntos" */
+        }
+
+        /* Accent heading for specific sections (e.g., initial info) */
+        .text-accent-heading {
+            color: var(--color-deep-turquoise);
+        }
+
+        /* Results section heading and score values */
+        .text-results-heading {
+            color: var(--color-medium-green); /* Verde medio para el título de resultados */
+        }
+        .text-score-value {
+            color: var(--color-vibrant-green); /* Verde vibrante para los valores de puntaje */
+        }
+
+
+        /* Input Labels */
+        .input-label {
+            @apply block text-gray-700 text-sm font-semibold mb-2;
+        }
+
+        /* Input Fields & Selectors */
+        .input-field {
+            background-color: var(--color-light-green); /* Fondo verde claro */
+            border: 1px solid var(--color-medium-green); /* Borde verde medio */
+            color: var(--color-text-body); /* Color del texto */
+            @apply shadow-sm appearance-none rounded-md w-full py-2.5 px-4 leading-tight transition-all duration-200 ease-in-out;
+        }
+        .input-field::placeholder {
+            color: rgba(27, 103, 107, 0.6); /* Turquesa con opacidad para placeholder */
+        }
+        .input-field:focus {
+            @apply outline-none ring-2 ring-offset-1 shadow-md;
+            border-color: var(--color-vibrant-green); /* Borde del focus con verde vibrante */
+            box-shadow: 0 0 0 3px rgba(136, 196, 37, 0.5); /* Anillo de focus con el color vibrante */
+        }
+
+        /* Specific style for select dropdowns for consistency */
+        .score-selector {
+            background-color: var(--color-light-green);
+            border: 1px solid var(--color-medium-green);
+            color: var(--color-text-body);
+            @apply appearance-none block w-24 rounded-md py-2.5 px-3 pr-8 shadow-sm cursor-pointer transition-all duration-200 ease-in-out;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath fill='%231b676b' d='M10 12l-4-4h8l-4 4z'/%3e%3c/svg%3e"); /* Flecha SVG en turquesa profundo */
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 0.8rem 0.8rem;
+        }
+        .score-selector:focus {
+            @apply outline-none ring-2 ring-offset-1 shadow-md;
+            border-color: var(--color-vibrant-green);
+            box-shadow: 0 0 0 3px rgba(136, 196, 37, 0.5);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--color-vibrant-green);
+            color: var(--color-text-light); /* Texto blanco para alto contraste */
+            @apply inline-flex items-center justify-center font-semibold py-3 px-8 rounded-lg shadow-md transition duration-300 ease-in-out transform text-lg;
+        }
+        .btn-primary:hover {
+            background-color: #71a91f; /* Un tono más oscuro del verde vibrante para hover */
+            @apply -translate-y-0.5 shadow-lg;
+        }
+        .btn-primary:focus {
+            @apply outline-none ring-4 ring-offset-1;
+            box-shadow: 0 0 0 4px rgba(136, 196, 37, 0.6); /* Anillo de focus en verde vibrante */
+        }
+
+        .btn-secondary {
+            background-color: var(--color-medium-green); /* Fondo verde medio */
+            color: var(--color-text-light); /* Texto blanco para alto contraste */
+            @apply inline-flex items-center justify-center font-semibold py-3 px-8 rounded-lg shadow-md transition duration-300 ease-in-out transform text-lg cursor-not-allowed opacity-75;
+        }
+        .btn-secondary:hover:not(:disabled) { /* Solo se aplica hover si no está deshabilitado */
+            background-color: #427e3d; /* Un tono más oscuro del verde medio para hover */
+            @apply -translate-y-0.5 shadow-lg;
+        }
+        .btn-secondary:focus {
+            @apply outline-none ring-4 ring-offset-1;
+            box-shadow: 0 0 0 4px rgba(81, 149, 72, 0.6); /* Anillo de focus en verde medio */
+        }
+
+
+        /* Tooltip styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 240px;
+            background-color: var(--color-deep-turquoise); /* Fondo del tooltip turquesa profundo */
+            color: var(--color-light-green); /* Texto del tooltip verde claro */
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px 12px;
+            position: absolute;
+            z-index: 10;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            white-space: pre-line;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        /* Tooltip arrow */
+        .tooltip-text::after {
+            content: " ";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: var(--color-deep-turquoise) transparent transparent transparent; /* Flecha del tooltip turquesa profundo */
+        }
+
+
+        /* Print Styles */
+        @media print {
+            body {
+                background-color: #fff !important;
+                margin: 0;
+                padding: 0;
+                font-family: var(--font-body) !important;
+                color: var(--color-text-body) !important;
+            }
+            .container {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0.5cm 1cm !important;
+                margin: 0 !important;
+                transform: none !important;
+            }
+            h1 {
+                font-size: 24pt !important;
+                margin-bottom: 1rem !important;
+                color: var(--color-deep-turquoise) !important; /* Turquesa profundo en impresión */
+                font-family: var(--font-heading) !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            h2.section-title {
+                font-size: 16pt !important;
+                margin-bottom: 0.8rem !important;
+                border-bottom: 1px solid var(--color-border-light) !important; /* Borde claro en impresión */
+                padding-bottom: 0.5rem !important;
+                color: var(--color-deep-turquoise) !important; /* Turquesa profundo en impresión */
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            section.section-card {
+                border: 1px solid var(--color-medium-green) !important; /* Borde verde medio en impresión */
+                padding: 1rem !important;
+                margin-bottom: 1rem !important;
+                box-shadow: none !important;
+                background-color: var(--color-light-green) !important; /* Fondo verde claro en impresión */
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            section.section-card.bg-results-card {
+                background-color: var(--color-feedback-success-bg) !important; /* Fondo de resultados en impresión */
+            }
+            .grid-cols-1, .md\:grid-cols-3 {
+                display: block !important;
+            }
+            .md\:col-span-1 {
+                margin-bottom: 0.5rem !important;
+            }
+            .shadow, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
+                box-shadow: none !important;
+            }
+            /* Hide buttons and unnecessary elements for print */
+            #exportPdfBtn, #saveGoogleSheetsBtn, .tooltip-container .tooltip-text {
+                display: none !important;
+            }
+            /* Ensure text colors are legible for print */
+            .text-main-heading, .text-accent-heading, .text-results-heading {
+                color: var(--color-deep-turquoise) !important; /* Turquesa profundo en impresión */
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .text-score-value {
+                color: var(--color-vibrant-green) !important; /* Verde vibrante en impresión */
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .last\:border-b-0 {
+                border-bottom: 1px solid var(--color-border-light) !important;
+            }
+            .md\:w-3\/4, .md\:w-1\/4 {
+                width: auto !important;
+            }
+            .score-selector {
+                width: 60px !important;
+                padding-right: 0.5rem !important;
+            }
+            .tooltip-container {
+                pointer-events: none !important;
+            }
+            /* Ocultar el sutil degradado del body en impresión */
+            body.bg-gradient-custom {
+                background: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-custom font-inter leading-normal tracking-normal p-4 md:p-8 text-gray-800">
+
+    <div class="container mx-auto max-w-4xl bg-white shadow-xl rounded-xl p-6 md:p-10 mb-8 transition-all duration-300 ease-in-out transform hover:scale-[1.005]">
+        <h1 class="text-3xl md:text-5xl font-poppins font-extrabold text-center text-main-heading mb-8 tracking-tight">
+            Evaluación Práctica <br class="md:hidden"> – RCP y Manejo de la Vía Aérea
+        </h1>
+
+        <!-- Campos Iniciales -->
+        <section class="section-card mb-8">
+            <h2 class="section-title text-accent-heading">Datos de la Evaluación</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label for="evaluationDate" class="input-label">Fecha de evaluación:</label>
+                    <input type="date" id="evaluationDate" class="input-field" required>
+                </div>
+                <div class="md:col-span-1">
+                    <label for="residentName" class="input-label">Nombre del residente evaluado:</label>
+                    <input type="text" id="residentName" placeholder="Ej: Dr. Juan Pérez" class="input-field" required>
+                </div>
+                <div class="md:col-span-1">
+                    <label for="evaluatorName" class="input-label">Nombre del evaluador:</label>
+                    <input type="text" id="evaluatorName" placeholder="Ej: Dra. Ana Gómez" class="input-field" required>
+                </div>
+            </div>
+        </section>
+
+        <!-- Criterios de Evaluación -->
+        <section class="section-card mb-8">
+            <h2 class="section-title">Rúbrica de Evaluación <span class="text-base text-gray-500 font-normal">(puntos variables por criterio)</span></h2>
+
+            <div id="rubricContainer" class="space-y-4">
+                <!-- Criterios se insertarán aquí por JavaScript -->
+            </div>
+        </section>
+
+        <!-- Resultados Automáticos -->
+        <section class="section-card bg-results-card border-results-border mb-8">
+            <h2 class="section-title text-results-heading">Resultados de la Evaluación</h2>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center text-lg md:text-xl">
+                <div class="mb-4 md:mb-0">
+                    <span class="font-bold text-gray-800">Puntaje Total:</span>
+                    <span id="totalScore" class="text-score-value font-extrabold ml-2 text-3xl transition-all duration-300 ease-in-out">0</span>
+                    <span class="text-gray-600"> / 100</span>
+                </div>
+                <div>
+                    <span class="font-bold text-gray-800">Calificación Final:</span>
+                    <span id="finalGrade" class="text-score-value font-extrabold ml-2 text-3xl transition-all duration-300 ease-in-out">Insuficiente</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Botones de Acción -->
+        <section class="flex flex-col md:flex-row justify-center gap-4">
+            <button id="exportPdfBtn" class="btn-primary">
+                <i class="fas fa-file-pdf mr-2"></i> Exportar como PDF
+            </button>
+            <button id="saveGoogleSheetsBtn" class="btn-secondary" disabled title="Esta función requiere configuración de backend o API de Google Sheets.">
+                <i class="fas fa-save mr-2"></i> Guardar / Enviar a Google Sheets (Opcional)
+            </button>
+        </section>
+    </div>
+
+    <!-- jspdf library (se mantiene CDN porque es externa) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- JavaScript personalizado (anteriormente script.js) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Referencias a los elementos del DOM
+            const evaluationDateInput = document.getElementById('evaluationDate');
+            const residentNameInput = document.getElementById('residentName');
+            const evaluatorNameInput = document.getElementById('evaluatorName');
+            const rubricContainer = document.getElementById('rubricContainer'); // Este es el contenedor donde se insertan los criterios
+            const totalScoreSpan = document.getElementById('totalScore');
+            const finalGradeSpan = document.getElementById('finalGrade');
+            const exportPdfBtn = document.getElementById('exportPdfBtn');
+            const saveGoogleSheetsBtn = document.getElementById('saveGoogleSheetsBtn'); // Referencia al botón de guardar
+
+            // ** TU URL DE GOOGLE APPS SCRIPT - YA ACTUALIZADA AQUÍ (confirmada por ti) **
+            const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbziJ5-2YTOWL_tXd7uA-9ujWBzwJ0aMAG-jHqHOQCtqPFzKbdjSYhwKv_7rimHsy4-T/exec';
+
+            // Definición de los criterios de evaluación con sus puntajes máximos
+            // "Técnica de RCP" y "Actitud ética" tienen un máximo de 15 puntos.
+            const criteria = [
+                { id: 'rcpTechnique', name: 'Técnica de RCP y manejo de vía aérea', maxScore: 15 },
+                { id: 'clinicalEvaluation', name: 'Evaluación clínica inicial y diagnóstico', maxScore: 20 },
+                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 20 },
+                { id: 'communicationLeadership', name: 'Comunicación y liderazgo en el equipo', maxScore: 20 },
+                { id: 'ethicalAttitude', name: 'Actitud ética, reflexiva y profesional', maxScore: 15 },
+                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 20 }
+            ];
+
+            // Calculamos el puntaje máximo posible de forma dinámica.
+            // Esto sumará (15 + 20 + 20 + 20 + 15 + 20) = 110 puntos.
+            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0);
+
+            // Escala de calificación para el tooltip (se refiere a la interpretación de un score individual de 0-20)
+            // Para simplificar, mantenemos la misma escala para la "ayuda" aunque el máximo de algunos criterios sea 15.
+            const scoreScaleTooltip = `
+Insuficiente (0–4)
+Aceptable (5–9)
+Bueno (10–14)
+Excelente (15–20)
+            `.trim();
+
+            // ** Lógica para GENERAR DINÁMICAMENTE los CRITERIOS DE EVALUACIÓN EN EL HTML **
+            criteria.forEach(criterion => {
+                const criterionDiv = document.createElement('div');
+                criterionDiv.className = 'flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-200 pb-4 mb-4 last:border-b-0';
+                criterionDiv.innerHTML = `
+                    <label for="${criterion.id}" class="text-gray-800 text-lg font-medium mb-2 md:mb-0 md:w-3/4">${criterion.name} (${criterion.maxScore} pts máx)</label>
+                    <div class="flex items-center space-x-2 md:w-1/4 justify-end">
+                        <div class="tooltip-container">
+                            <select id="${criterion.id}" class="score-selector">
+                                ${Array.from({ length: criterion.maxScore + 1 }, (_, i) => `<option value="${i}">${i}</option>`).join('')}
+                            </select>
+                            <span class="tooltip-text">${scoreScaleTooltip}</span>
+                        </div>
+                    </div>
+                `;
+                // Aquí es donde se añade el criterio al contenedor en el HTML
+                rubricContainer.appendChild(criterionDiv);
+            });
+
+            // Añadir listeners a los selectores de puntaje para que actualicen el total
+            const scoreSelectors = document.querySelectorAll('.score-selector');
+            scoreSelectors.forEach(selector => {
+                selector.addEventListener('change', updateTotalScoreAndGrade);
+            });
+
+            // Función principal para calcular y mostrar el puntaje total y la calificación final
+            function updateTotalScoreAndGrade() {
+                let rawTotalScore = 0; // Este es el puntaje sumado de los selectores (0-110)
+                scoreSelectors.forEach(selector => {
+                    rawTotalScore += parseInt(selector.value, 10);
+                });
+
+                // ** Lógica CLAVE para escalar el puntaje a sobre 100 **
+                // (puntaje_obtenido / puntaje_maximo_real) * 100
+                const scaledTotalScore = (rawTotalScore / ACTUAL_MAXIMUM_POSSIBLE_SCORE) * 100;
+                const displayedScore = Math.round(scaledTotalScore); // Redondeamos para un número entero legible
+
+                totalScoreSpan.textContent = displayedScore;
+                finalGradeSpan.textContent = getFinalGrade(displayedScore); // La calificación se basa en el score escalado
+            }
+
+            // Función para determinar la calificación final basada en el puntaje total (ya escalado a 100)
+            function getFinalGrade(score) {
+                if (score >= 90) {
+                    return 'Excelente';
+                } else if (score >= 70) {
+                    return 'Bueno';
+                } else if (score >= 40) {
+                    return 'Aceptable';
+                } else {
+                    return 'Insuficiente';
+                }
+            }
+
+            // Función para validar que todos los campos obligatorios estén completos
+            function validateForm() {
+                const requiredInputs = [
+                    evaluationDateInput,
+                    residentNameInput,
+                    evaluatorNameInput
+                ];
+
+                for (const input of requiredInputs) {
+                    if (!input.value.trim()) {
+                        alert('Por favor, complete todos los campos de información inicial (Fecha, Residente, Evaluador).');
+                        input.focus();
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            // Función para exportar a PDF (descarga en el navegador)
+            exportPdfBtn.addEventListener('click', () => {
+                if (!validateForm()) {
+                    return;
+                }
+
+                const originalBtnText = exportPdfBtn.innerHTML;
+                exportPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generando PDF...';
+                exportPdfBtn.disabled = true;
+                exportPdfBtn.classList.remove('btn-primary');
+                exportPdfBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+
+                setTimeout(() => { // Pequeño retraso para que el usuario vea el spinner antes de descargar
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    const date = evaluationDateInput.value;
+                    const resident = residentNameInput.value;
+                    const evaluator = evaluatorNameInput.value;
+                    const totalScore = totalScoreSpan.textContent; // Este ya es el score escalado (0-100)
+                    const finalGrade = finalGradeSpan.textContent;
+
+                    let yPos = 20;
+
+                    doc.setFont('Poppins', 'bold');
+                    doc.setFontSize(26);
+                    doc.setTextColor(27, 103, 107);
+                    doc.text("Evaluación Práctica", 105, yPos, { align: 'center' });
+                    yPos += 10;
+                    doc.text("RCP y Manejo de la Vía Aérea", 105, yPos, { align: 'center' });
+                    yPos += 20;
+
+                    doc.setFont('Inter', 'normal');
+                    doc.setFontSize(12);
+                    doc.setTextColor(55, 65, 81);
+                    doc.text(`Fecha de Evaluación: ${date}`, 20, yPos);
+                    yPos += 7;
+                    doc.text(`Residente Evaluado: ${resident}`, 20, yPos);
+                    yPos += 7;
+                    doc.text(`Evaluador: ${evaluator}`, 20, yPos);
+                    yPos += 15;
+
+                    doc.setFont('Poppins', 'semibold');
+                    doc.setFontSize(18);
+                    doc.setTextColor(27, 103, 107);
+                    doc.text("Criterios de Evaluación:", 20, yPos);
+                    yPos += 12;
+
+                    doc.setFont('Inter', 'normal');
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+
+                    criteria.forEach(criterion => {
+                        const selector = document.getElementById(criterion.id);
+                        const score = selector ? selector.value : '0'; // Default to 0 if no score
+                        doc.text(`${criterion.name}: ${score} / ${criterion.maxScore}`, 25, yPos); // Muestra maxScore específico
+                        yPos += 8;
+                    });
+
+                    yPos += 10;
+
+                    doc.setFont('Poppins', 'semibold');
+                    doc.setFontSize(18);
+                    doc.setTextColor(27, 103, 107);
+                    doc.text("Resultados Finales:", 20, yPos);
+                    yPos += 12;
+
+                    doc.setFont('Inter', 'bold');
+                    doc.setFontSize(16);
+                    doc.setTextColor(136, 196, 37);
+                    doc.text(`Puntaje Total: ${totalScore} / 100`, 25, yPos);
+                    yPos += 9;
+                    doc.text(`Calificación Final: ${finalGrade}`, 25, yPos);
+                    yPos += 15;
+
+                    // Asegúrate de que el nombre del residente esté limpio para el nombre del archivo
+                    const cleanResident = resident.replace(/[^a-zA-Z0-9_ -]/g, '_');
+                    doc.save(`Evaluacion_RCP_${cleanResident}_${date}.pdf`);
+
+                    // Restaurar botón
+                    exportPdfBtn.innerHTML = originalBtnText;
+                    exportPdfBtn.disabled = false;
+                    exportPdfBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                    exportPdfBtn.classList.add('btn-primary');
+                }, 500);
+            });
+
+            // Habilitar el botón de guardar/enviar a Google Sheets y añadir el listener
+            saveGoogleSheetsBtn.disabled = false;
+            saveGoogleSheetsBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+            saveGoogleSheetsBtn.classList.add('btn-primary');
+            saveGoogleSheetsBtn.title = 'Guardar evaluación en Google Sheets y Drive.';
+
+
+            // FUNCIÓN PARA ENVIAR DATOS A GOOGLE SHEETS Y DRIVE
+            saveGoogleSheetsBtn.addEventListener('click', async () => {
+                if (!validateForm()) {
+                    return;
+                }
+
+                const date = evaluationDateInput.value;
+                const residentName = residentNameInput.value;
+                const evaluatorName = evaluatorNameInput.value;
+                const totalScore = totalScoreSpan.textContent; // Score escalado (0-100)
+                const finalGrade = finalGradeSpan.textContent;
+
+                const scores = {}; // Guarda los puntajes individuales (0-20 o 0-15)
+                scoreSelectors.forEach(selector => {
+                    scores[selector.id] = parseInt(selector.value, 10);
+                });
+
+                // 2. Generar el PDF en memoria (Base64) para el envío
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                let pdfYPos = 20;
+
+                doc.setFont('Poppins', 'bold');
+                doc.setFontSize(26);
+                doc.setTextColor(27, 103, 107);
+                doc.text("Evaluación Práctica", 105, pdfYPos, { align: 'center' });
+                pdfYPos += 10;
+                doc.text("RCP y Manejo de la Vía Aérea", 105, pdfYPos, { align: 'center' });
+                pdfYPos += 20;
+
+                doc.setFont('Inter', 'normal');
+                doc.setFontSize(12);
+                doc.setTextColor(55, 65, 81);
+                doc.text(`Fecha de Evaluación: ${date}`, 20, pdfYPos);
+                pdfYPos += 7;
+                doc.text(`Residente Evaluado: ${residentName}`, 20, pdfYPos);
+                pdfYPos += 7;
+                doc.text(`Evaluador: ${evaluatorName}`, 20, pdfYPos);
+                pdfYPos += 15;
+
+                doc.setFont('Poppins', 'semibold');
+                doc.setFontSize(18);
+                doc.setTextColor(27, 103, 107);
+                doc.text("Criterios de Evaluación:", 20, pdfYPos);
+                pdfYPos += 12;
+
+                doc.setFont('Inter', 'normal');
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+
+                criteria.forEach(criterion => {
+                    const score = scores[criterion.id]; // Usamos el score individual del objeto 'scores'
+                    doc.text(`${criterion.name}: ${score} / ${criterion.maxScore}`, 25, pdfYPos);
+                    pdfYPos += 8;
+                });
+
+                pdfYPos += 10;
+
+                doc.setFont('Poppins', 'semibold');
+                doc.setFontSize(18);
+                doc.setTextColor(27, 103, 107);
+                doc.text("Resultados Finales:", 20, pdfYPos);
+                pdfYPos += 12;
+
+                doc.setFont('Inter', 'bold');
+                doc.setFontSize(16);
+                doc.setTextColor(136, 196, 37);
+                doc.text(`Puntaje Total: ${totalScore} / 100`, 25, pdfYPos);
+                pdfYPos += 9;
+                doc.text(`Calificación Final: ${finalGrade}`, 25, pdfYPos);
+
+                const pdfDataUri = doc.output('datauristring');
+                const pdfBase64 = pdfDataUri.split(',')[1]; // Remover el prefijo 'data:application/pdf;base64,'
+
+                const dataToSend = {
+                    date: date,
+                    residentName: residentName,
+                    evaluatorName: evaluatorName,
+                    scores: scores, // Puntajes individuales por ID
+                    totalScore: totalScore, // Puntaje total escalado (0-100)
+                    finalGrade: finalGrade,
+                    pdfData: pdfBase64 // PDF en Base64
+                };
+
+                // 3. Enviar los datos a Google Apps Script
+                const originalBtnText = saveGoogleSheetsBtn.innerHTML;
+                saveGoogleSheetsBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Guardando...';
+                saveGoogleSheetsBtn.disabled = true;
+                saveGoogleSheetsBtn.classList.remove('btn-primary', 'btn-secondary');
+                saveGoogleSheetsBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+
+                try {
+                    const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(dataToSend),
+                    });
+
+                    // Verificar si la respuesta fue OK (status 200-299)
+                    if (!response.ok) {
+                        // Si la respuesta no es OK, intenta leer el error del servidor
+                        const errorText = await response.text(); // Lee el cuerpo de la respuesta como texto
+                        throw new Error(`Error en la respuesta del servidor (${response.status}): ${errorText}`);
+                    }
+
+                    const result = await response.json(); // Leer la respuesta JSON
+
+                    if (result.success) {
+                        alert('¡Evaluación guardada exitosamente en Google Sheets y Drive!');
+                        console.log('Respuesta de Apps Script:', result.message);
+                    } else {
+                        alert('Error al guardar la evaluación: ' + result.message);
+                        console.error('Error de Apps Script:', result.message);
+                    }
+                } catch (error) {
+                    // Este catch maneja errores de red, errores CORS no atrapados por el navegador,
+                    // y errores lanzados manualmente arriba si response.ok no es true.
+                    let errorMessage = 'Hubo un problema de conexión o un error inesperado al guardar.';
+                    if (error.message.includes('Failed to fetch') || error.message.includes('ERR_INTERNET_DISCONNECTED')) {
+                        errorMessage = '¡Problema de conexión a Internet! Asegúrate de estar online.';
+                    } else if (error.message.includes('CORS policy') || error.message.includes('blocked by CORS')) {
+                            errorMessage = 'Error de seguridad al conectar con Google. Por favor, asegúrate de que tu Google Apps Script esté desplegado como "Cualquier usuario".';
+                    } else if (error.message.includes('Error en la respuesta del servidor')) {
+                        errorMessage = `Error del servidor de Google: ${error.message}`;
+                    }
+                    alert(errorMessage);
+                    console.error('Error al enviar los datos:', error);
+                } finally {
+                    // Restaurar el botón siempre
+                    saveGoogleSheetsBtn.innerHTML = originalBtnText;
+                    saveGoogleSheetsBtn.disabled = false;
+                    saveGoogleSheetsBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                    saveGoogleSheetsBtn.classList.add('btn-primary');
+                }
+            });
+
+            // Inicializar el calculo de puntaje al cargar la página
+            updateTotalScoreAndGrade();
+
+            // Establecer la fecha actual por defecto en el campo de fecha
+            evaluationDateInput.valueAsDate = new Date();
+        });
+    </script>
+</body>
+</html>
