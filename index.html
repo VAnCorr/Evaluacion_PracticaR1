@@ -13,7 +13,7 @@
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- CSS Personalizado (anteriormente style.css) -->
+    <!-- CSS Personalizado -->
     <style>
         /* Variables CSS para la nueva paleta de colores y tipografías consistentes */
         :root {
@@ -392,23 +392,23 @@
             const exportPdfBtn = document.getElementById('exportPdfBtn');
             const saveGoogleSheetsBtn = document.getElementById('saveGoogleSheetsBtn'); // Referencia al botón de guardar
 
-            // ** TU URL DE GOOGLE APPS SCRIPT - YA ACTUALIZADA AQUÍ (confirmada por ti) **
+            // ** TU URL DE GOOGLE APPS SCRIPT - YA ACTUALIZADA AQUÍ **
             const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbziJ5-2YTOWL_tXd7uA-9ujWBzwJ0aMAG-jHqHOQCtqPFzKbdjSYhwKv_7rimHsy4-T/exec';
 
-            // Definición de los criterios de evaluación con sus puntajes máximos
-            // "Técnica de RCP" y "Actitud ética" tienen un máximo de 15 puntos.
+            // ** DEFINICIÓN DE LOS CRITERIOS DE EVALUACIÓN CON SUS PUNTAJES MÁXIMOS **
+            // Los criterios con 15 puntos son: "Técnica de RCP", "Actitud ética", "Uso de datos", "Manejo post paro"
             const criteria = [
                 { id: 'rcpTechnique', name: 'Técnica de RCP y manejo de vía aérea', maxScore: 15 },
                 { id: 'clinicalEvaluation', name: 'Evaluación clínica inicial y diagnóstico', maxScore: 20 },
-                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 20 },
+                { id: 'dataUsage', name: 'Uso de datos complementarios y monitoreo', maxScore: 15 }, // <-- CAMBIADO A 15
                 { id: 'communicationLeadership', name: 'Comunicación y liderazgo en el equipo', maxScore: 20 },
                 { id: 'ethicalAttitude', name: 'Actitud ética, reflexiva y profesional', maxScore: 15 },
-                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 20 }
+                { id: 'postArrestCare', name: 'Manejo post paro y continuidad clínica', maxScore: 15 } // <-- CAMBIADO A 15
             ];
 
             // Calculamos el puntaje máximo posible de forma dinámica.
-            // Esto sumará (15 + 20 + 20 + 20 + 15 + 20) = 110 puntos.
-            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0);
+            // Ahora sumará (15 + 20 + 15 + 20 + 15 + 15) = 100 puntos exactos.
+            const ACTUAL_MAXIMUM_POSSIBLE_SCORE = criteria.reduce((sum, criterion) => sum + criterion.maxScore, 0); // Esto dará 100
 
             // Escala de calificación para el tooltip (se refiere a la interpretación de un score individual de 0-20)
             // Para simplificar, mantenemos la misma escala para la "ayuda" aunque el máximo de algunos criterios sea 15.
@@ -446,16 +446,15 @@ Excelente (15–20)
 
             // Función principal para calcular y mostrar el puntaje total y la calificación final
             function updateTotalScoreAndGrade() {
-                let rawTotalScore = 0; // Este es el puntaje sumado de los selectores (0-110)
+                let rawTotalScore = 0; // Este es el puntaje sumado de los selectores (0-100)
                 scoreSelectors.forEach(selector => {
                     rawTotalScore += parseInt(selector.value, 10);
                 });
 
                 // ** Lógica CLAVE para escalar el puntaje a sobre 100 **
-                // (puntaje_obtenido / puntaje_maximo_real) * 100
-                const scaledTotalScore = (rawTotalScore / ACTUAL_MAXIMUM_POSSIBLE_SCORE) * 100;
-                const displayedScore = Math.round(scaledTotalScore); // Redondeamos para un número entero legible
-
+                // Dado que ACTUAL_MAXIMUM_POSSIBLE_SCORE es ahora 100, la escalada se simplifica.
+                const displayedScore = rawTotalScore; // Ya no es necesario escalar
+                
                 totalScoreSpan.textContent = displayedScore;
                 finalGradeSpan.textContent = getFinalGrade(displayedScore); // La calificación se basa en el score escalado
             }
@@ -708,7 +707,7 @@ Excelente (15–20)
                     if (error.message.includes('Failed to fetch') || error.message.includes('ERR_INTERNET_DISCONNECTED')) {
                         errorMessage = '¡Problema de conexión a Internet! Asegúrate de estar online.';
                     } else if (error.message.includes('CORS policy') || error.message.includes('blocked by CORS')) {
-                            errorMessage = 'Error de seguridad al conectar con Google. Por favor, asegúrate de que tu Google Apps Script esté desplegado como "Cualquier usuario".';
+                             errorMessage = 'Error de seguridad al conectar con Google. Por favor, asegúrate de que tu Google Apps Script esté desplegado como "Cualquier usuario".';
                     } else if (error.message.includes('Error en la respuesta del servidor')) {
                         errorMessage = `Error del servidor de Google: ${error.message}`;
                     }
